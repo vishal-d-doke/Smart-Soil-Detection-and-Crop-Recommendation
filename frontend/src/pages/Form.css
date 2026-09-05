@@ -1,0 +1,40 @@
+.form-page {
+  gap: 2rem;
+}
+
+.form-grid,
+.detail-grid,
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.stack-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.result-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.result-panel.compact {
+  gap: 0.8rem;
+}
+
+.result-panel strong {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+@media (max-width: 820px) {
+  .form-grid,
+  .detail-grid,
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}

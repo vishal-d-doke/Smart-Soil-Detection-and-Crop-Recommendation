@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Environment and secrets
+.env
+.env.local
+
+# Local databases and build output
+*.db
+*.sqlite
+*.sqlite3
+dist/
+
+# IDE files
+.vscode/

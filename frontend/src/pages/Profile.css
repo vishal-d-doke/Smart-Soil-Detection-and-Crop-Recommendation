@@ -1,0 +1,26 @@
+.profile-page {
+  gap: 2rem;
+}
+
+.profile-list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+}
+
+.profile-list div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.profile-list dt {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.profile-list dd {
+  margin: 0;
+  font-weight: 700;
+}

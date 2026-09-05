@@ -1,0 +1,39 @@
+.content-page {
+  gap: 2rem;
+}
+
+.two-column {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 1.2rem;
+}
+
+.text-panel {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.5rem;
+}
+
+.info-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.highlight-box {
+  background: var(--primary-soft);
+  border-radius: 18px;
+  padding: 1.1rem 1.2rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.highlight-box strong {
+  font-size: 1rem;
+}
+
+@media (max-width: 820px) {
+  .two-column {
+    grid-template-columns: 1fr;
+  }
+}

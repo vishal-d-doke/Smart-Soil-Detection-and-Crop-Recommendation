@@ -1,0 +1,180 @@
+.dashboard-page {
+  gap: 2rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.stat-tile {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.stat-tile span {
+  display: block;
+  color: var(--muted);
+}
+
+.stat-tile strong {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: clamp(1.5rem, 2.3vw, 2.3rem);
+}
+
+.stat-tile.green { border-top: 4px solid #1e9b6a; }
+.stat-tile.amber { border-top: 4px solid #f0b429; }
+.stat-tile.blue { border-top: 4px solid #3d7ae6; }
+
+.live-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.live-metric {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.live-metric strong {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: clamp(1.8rem, 2vw, 2.4rem);
+}
+
+.live-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(29, 143, 90, 0.12);
+  color: var(--primary-dark);
+  border-radius: 999px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.live-note {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.market-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.market-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.market-list li:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.market-list small {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--muted);
+}
+
+.market-price {
+  display: grid;
+  justify-items: end;
+  gap: 0.15rem;
+}
+
+.market-price span {
+  font-weight: 700;
+}
+
+.market-price em {
+  font-style: normal;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.market-price em.positive {
+  color: #158a4d;
+}
+
+.market-price em.negative {
+  color: #d9534f;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.list-panel,
+.check-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.list-panel li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.list-panel li:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.list-panel small {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--muted);
+}
+
+.tag {
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+@media (max-width: 820px) {
+  .dashboard-grid,
+  .live-grid,
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
+}

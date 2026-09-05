@@ -1,0 +1,72 @@
+.auth-page,
+.not-found-page {
+  min-height: 70vh;
+  display: grid;
+  place-items: center;
+}
+
+.auth-card,
+.not-found-card {
+  width: min(100%, 500px);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.auth-form,
+.stack-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+.auth-form .button-secondary {
+  width: 100%;
+}
+
+.phone-input-group {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 0.4fr) 1fr;
+  gap: 0.5rem;
+}
+
+.auth-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+  padding: 0.3rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(235, 239, 229, 0.7);
+}
+
+.auth-methods button {
+  border: 0;
+  border-radius: 8px;
+  padding: 0.65rem 0.5rem;
+  color: var(--muted);
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.auth-methods button.active {
+  color: var(--primary-dark);
+  background: white;
+  box-shadow: 0 2px 8px rgba(38, 61, 35, 0.1);
+}
+
+.auth-switch {
+  margin-top: 1rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+.auth-switch a {
+  color: var(--primary-dark);
+  font-weight: 700;
+}
