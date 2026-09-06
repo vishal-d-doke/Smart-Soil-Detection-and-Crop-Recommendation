@@ -16,14 +16,6 @@ class UserLogin(BaseModel):
     password: str
 
 
-class OTPRequest(BaseModel):
-    phone: str
-
-
-class OTPVerify(OTPRequest):
-    otp: str
-
-
 class UserOut(UserBase):
     id: int
 
