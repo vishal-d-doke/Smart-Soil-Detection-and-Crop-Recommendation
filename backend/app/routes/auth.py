@@ -87,7 +87,10 @@ def request_otp(payload: OTPRequest, db: Session = Depends(get_db)):
 
     logger.warning("DEV MODE OTP for %s: %s", phone, code)
     print(f"\n[DEV MODE] OTP for {phone}: {code}\n")
-    return {"message": f"OTP generated (dev mode): {code}" if settings.app_debug else "OTP sent successfully"}
+    return {
+        "message": "OTP sent successfully" if has_twilio else f"Testing OTP: {code}",
+        "otp": code if not has_twilio else None,
+    }
 
 
 @router.post("/verify-otp", response_model=Token)

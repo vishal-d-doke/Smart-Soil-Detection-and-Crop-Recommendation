@@ -12,6 +12,7 @@ export default function Login() {
   const [mobile, setMobile] = useState('');
   const [otp, setOtp] = useState('');
   const [otpRequested, setOtpRequested] = useState(false);
+  const [info, setInfo] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -23,6 +24,7 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
+    setInfo('');
 
     setLoading(true);
 
@@ -46,10 +48,17 @@ export default function Login() {
     }
 
     setError('');
+    setInfo('');
     setLoading(true);
     try {
-      await requestOtp(`${countryCode}${mobile.replace(/\D/g, '')}`);
+      const res = await requestOtp(`${countryCode}${mobile.replace(/\D/g, '')}`);
       setOtpRequested(true);
+      if (res?.otp) {
+        setInfo(`Test code generated: ${res.otp}`);
+        setOtp(res.otp);
+      } else {
+        setInfo('OTP has been sent to your mobile phone.');
+      }
     } catch (requestError) {
       setError(requestError.message || 'Unable to request OTP.');
     } finally {
@@ -121,6 +130,7 @@ export default function Login() {
             </>
           )}
 
+          {info && <p style={{ color: '#15803d', backgroundColor: '#f0fdf4', padding: '0.6rem 0.8rem', borderRadius: '8px', border: '1px solid #bbf7d0', fontSize: '0.875rem', margin: '0.5rem 0' }}>{info}</p>}
           {error && <p className="form-error">{error}</p>}
           <Button type="submit" disabled={loading}>{loading ? 'Signing in...' : authMethod === 'email' ? 'Sign in' : 'Verify OTP'}</Button>
         </form>
