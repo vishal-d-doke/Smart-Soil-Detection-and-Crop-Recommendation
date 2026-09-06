@@ -2,6 +2,7 @@ services:
   - type: web
     name: smart-soil-api
     runtime: python
+    plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
@@ -36,5 +37,6 @@ services:
 
 databases:
   - name: smart-soil-db
+    plan: free
     databaseName: smart_soil
     user: smart_soil_user
