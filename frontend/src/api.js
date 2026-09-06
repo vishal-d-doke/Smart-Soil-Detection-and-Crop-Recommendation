@@ -49,6 +49,17 @@ function getErrorMessage(payload) {
 }
 
 export async function apiRequest(endpoint, options = {}) {
+  if (
+    typeof window !== 'undefined' &&
+    window.location.hostname !== 'localhost' &&
+    window.location.hostname !== '127.0.0.1' &&
+    API_BASE_URL.includes('localhost')
+  ) {
+    throw new Error(
+      'Backend is not connected yet. Please add VITE_API_BASE_URL in your Vercel Project Settings > Environment Variables.'
+    );
+  }
+
   const token = getAuthToken();
   const headers = new Headers(options.headers || {});
   const isFormData = options.body instanceof FormData;
