@@ -1,5 +1,6 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import { logoutUser } from '../api';
 
 const publicLinks = [
   { label: 'Home', to: '/' },
@@ -17,7 +18,13 @@ const dashboardLinks = [
 ];
 
 export default function Navbar({ mode = 'public' }) {
+  const navigate = useNavigate();
   const links = mode === 'dashboard' ? dashboardLinks : publicLinks;
+
+  const handleLogout = () => {
+    logoutUser();
+    navigate('/login');
+  };
 
   return (
     <header className="topbar">
@@ -42,9 +49,9 @@ export default function Navbar({ mode = 'public' }) {
 
         <div className="nav-actions">
           {mode === 'dashboard' ? (
-            <NavLink to="/" className="button button-secondary">
-              Exit dashboard
-            </NavLink>
+            <button type="button" className="button button-secondary" onClick={handleLogout}>
+              Logout
+            </button>
           ) : (
             <>
               <NavLink to="/login" className="button button-secondary">

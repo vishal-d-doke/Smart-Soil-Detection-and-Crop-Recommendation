@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import PublicLayout from './layouts/PublicLayout';
 import DashboardLayout from './layouts/DashboardLayout';
+import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import About from './pages/About';
 import Login from './pages/Login';
@@ -24,13 +25,15 @@ function App() {
           <Route path="register" element={<Register />} />
         </Route>
 
-        <Route path="app" element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="soil-detection" element={<SoilDetection />} />
-          <Route path="crop-recommendation" element={<CropRecommendation />} />
-          <Route path="history" element={<History />} />
-          <Route path="prediction/:id" element={<PredictionDetails />} />
-          <Route path="profile" element={<Profile />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="app" element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="soil-detection" element={<SoilDetection />} />
+            <Route path="crop-recommendation" element={<CropRecommendation />} />
+            <Route path="history" element={<History />} />
+            <Route path="prediction/:id" element={<PredictionDetails />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
         </Route>
 
         <Route path="/" element={<Navigate to="/" replace />} />

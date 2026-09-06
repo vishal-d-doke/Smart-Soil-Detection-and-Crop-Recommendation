@@ -1,3 +1,5 @@
+import json
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -5,8 +7,10 @@ from app.database.connection import get_db
 from app.models.prediction import Prediction
 from app.models.user import User
 from app.security import get_current_user
+from app.services.ml.crop_model import CropModel
 
 router = APIRouter()
+model = CropModel()
 
 
 @router.post("/recommend")
@@ -16,26 +20,14 @@ def recommend_crop(payload: dict, db: Session = Depends(get_db), current_user: U
     if missing:
         raise HTTPException(status_code=400, detail=f"Missing fields: {missing}")
 
-    crop = "Rice"
-    if payload.get("temperature", 0) > 30:
-        crop = "Maize"
-    elif payload.get("rainfall", 0) < 100:
-        crop = "Sorghum"
-
-    result = {
-        "recommended_crop": crop,
-        "yield_estimate": "High",
-        "reason": "Balanced nutrient profile and climate conditions support strong growth.",
-        "confidence": 0.89,
-        "inputs": payload,
-    }
+    result = model.recommend(payload)
 
     prediction = Prediction(
         user_id=current_user.id,
         type="crop",
-        title="Crop Recommendation",
-        input_data=str(payload),
-        result=str(result),
+        title=f"Crop Recommendation - {result['recommended_crop']}",
+        input_data=json.dumps(payload),
+        result=json.dumps(result),
         confidence=result["confidence"],
     )
     db.add(prediction)

@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import hashlib
+import logging
 import re
 import secrets
 
@@ -15,6 +16,7 @@ from app.schemas.user import OTPRequest, OTPVerify, Token, UserCreate, UserLogin
 from app.security import create_access_token, get_current_user, get_password_hash, verify_password
 
 router = APIRouter()
+logger = logging.getLogger("smart_soil.auth")
 
 
 def normalize_phone(phone: str) -> str:
@@ -59,7 +61,9 @@ def request_otp(payload: OTPRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.phone == phone).first()
     if not user:
         raise HTTPException(status_code=404, detail="No account is registered with this mobile number")
-    if not all((settings.twilio_account_sid, settings.twilio_auth_token, settings.twilio_phone_number)):
+
+    has_twilio = all((settings.twilio_account_sid, settings.twilio_auth_token, settings.twilio_phone_number))
+    if not has_twilio and not settings.app_debug:
         raise HTTPException(status_code=503, detail="OTP service is not configured")
 
     code = f"{secrets.randbelow(1_000_000):06d}"
@@ -67,18 +71,23 @@ def request_otp(payload: OTPRequest, db: Session = Depends(get_db)):
     db.add(LoginOTP(
         phone=phone,
         code_hash=hashlib.sha256(code.encode()).hexdigest(),
-        expires_at=datetime.utcnow() + timedelta(minutes=settings.otp_expire_minutes),
+        expires_at=datetime.now(timezone.utc) + timedelta(minutes=settings.otp_expire_minutes),
     ))
     db.commit()
 
-    from twilio.rest import Client
+    if has_twilio:
+        from twilio.rest import Client
 
-    Client(settings.twilio_account_sid, settings.twilio_auth_token).messages.create(
-        body=f"Your Smart Soil login OTP is {code}. It expires in {settings.otp_expire_minutes} minutes.",
-        from_=settings.twilio_phone_number,
-        to=phone,
-    )
-    return {"message": "OTP sent successfully"}
+        Client(settings.twilio_account_sid, settings.twilio_auth_token).messages.create(
+            body=f"Your Smart Soil login OTP is {code}. It expires in {settings.otp_expire_minutes} minutes.",
+            from_=settings.twilio_phone_number,
+            to=phone,
+        )
+        return {"message": "OTP sent successfully"}
+
+    logger.warning("DEV MODE OTP for %s: %s", phone, code)
+    print(f"\n[DEV MODE] OTP for {phone}: {code}\n")
+    return {"message": f"OTP generated (dev mode): {code}" if settings.app_debug else "OTP sent successfully"}
 
 
 @router.post("/verify-otp", response_model=Token)
@@ -86,7 +95,10 @@ def verify_otp(payload: OTPVerify, db: Session = Depends(get_db)):
     phone = normalize_phone(payload.phone)
     user = db.query(User).filter(User.phone == phone).first()
     login_otp = db.query(LoginOTP).filter(LoginOTP.phone == phone).first()
-    if not user or not login_otp or login_otp.expires_at < datetime.utcnow():
+    now = datetime.now(timezone.utc)
+    # Handle both naive and aware datetime from database
+    expires_at = login_otp.expires_at.replace(tzinfo=timezone.utc) if login_otp and login_otp.expires_at.tzinfo is None else (login_otp.expires_at if login_otp else None)
+    if not user or not login_otp or (expires_at and expires_at < now):
         raise HTTPException(status_code=401, detail="Invalid or expired OTP")
     if login_otp.attempts >= 5:
         raise HTTPException(status_code=429, detail="Too many OTP attempts")

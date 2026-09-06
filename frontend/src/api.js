@@ -141,6 +141,14 @@ export function analyzeSoil(payload) {
   });
 }
 
+export function getPredictionById(id) {
+  return apiRequest(`/history/${id}`);
+}
+
+export function logoutUser() {
+  setAuthToken(null);
+}
+
 export function recommendCrop(payload) {
   return apiRequest('/crop/recommend', {
     method: 'POST',

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import Column, DateTime, Integer, String
 
@@ -12,5 +12,5 @@ class LoginOTP(Base):
     phone = Column(String(20), index=True, nullable=False)
     code_hash = Column(String(64), nullable=False)
     expires_at = Column(DateTime, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     attempts = Column(Integer, default=0, nullable=False)

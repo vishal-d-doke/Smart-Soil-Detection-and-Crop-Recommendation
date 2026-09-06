@@ -117,10 +117,14 @@ export default function Dashboard() {
             {history.length > 0 ? history.map((item) => (
               <li key={item.id}>
                 <div>
-                  <strong>{item.name}</strong>
+                  <Link to={`/app/prediction/${item.id}`} style={{ color: 'inherit' }}>
+                    <strong>{item.name}</strong>
+                  </Link>
                   <small>{item.date}</small>
                 </div>
-                <span className="tag">{item.status}</span>
+                <Link to={`/app/prediction/${item.id}`} className="tag" style={{ textDecoration: 'none' }}>
+                  {item.status}
+                </Link>
               </li>
             )) : (
               <li>

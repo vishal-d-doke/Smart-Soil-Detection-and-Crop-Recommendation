@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import { recommendCrop } from '../api';
@@ -98,6 +99,11 @@ export default function CropRecommendation() {
                 <div>
                   <span className="result-label">Reason</span>
                   <strong>{result.reason}</strong>
+                </div>
+                <div style={{ marginTop: '1.25rem' }}>
+                  <Link to="/app/history" className="button button-secondary" style={{ width: '100%', textAlign: 'center', display: 'block' }}>
+                    View all past evaluations
+                  </Link>
                 </div>
               </>
             ) : (
