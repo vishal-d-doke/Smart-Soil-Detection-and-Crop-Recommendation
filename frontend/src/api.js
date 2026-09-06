@@ -102,19 +102,6 @@ export function loginUser({ email, password }) {
   });
 }
 
-export function requestOtp(phone) {
-  return apiRequest('/auth/request-otp', {
-    method: 'POST',
-    body: { phone },
-  });
-}
-
-export function verifyOtp(phone, otp) {
-  return apiRequest('/auth/verify-otp', {
-    method: 'POST',
-    body: { phone, otp },
-  });
-}
 
 export function registerUser({ fullName, email, password, phone }) {
   return apiRequest('/auth/register', {

@@ -10,10 +10,6 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
     cors_origins: str = "*"
-    twilio_account_sid: str = ""
-    twilio_auth_token: str = ""
-    twilio_phone_number: str = ""
-    otp_expire_minutes: int = 5
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
