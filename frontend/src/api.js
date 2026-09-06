@@ -1,14 +1,22 @@
-// Normalize the API base URL: handle bare hostnames injected by Render's fromService
-// and strip any trailing slashes to prevent double-slash URLs.
+// Normalize the API base URL:
+// 1. If explicitly configured via VITE_API_BASE_URL, use it (handles bare hostnames or full URLs).
+// 2. If running locally on localhost / 127.0.0.1, use http://localhost:8000.
+// 3. If deployed on Vercel (unified serverless hosting), return '' so calls use same-domain relative paths.
 function buildApiBaseUrl(raw) {
-  if (!raw) return 'http://localhost:8000';
-  const trimmed = raw.replace(/\/+$/, '');
-  // If it already has a protocol prefix, use it as-is
-  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
-    return trimmed;
+  if (raw && raw.trim()) {
+    const trimmed = raw.trim().replace(/\/+$/, '');
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+    return `https://${trimmed}`;
   }
-  // Bare hostname injected by Render's fromService property → prepend https://
-  return `https://${trimmed}`;
+  if (
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ) {
+    return 'http://localhost:8000';
+  }
+  return '';
 }
 
 const API_BASE_URL = buildApiBaseUrl(import.meta.env.VITE_API_BASE_URL);
@@ -36,7 +44,7 @@ function getErrorMessage(payload) {
     return payload.detail
       .map((item) => {
         const field = item.loc?.at(-1);
-        const fieldNames = { username: 'Email', password: 'Password', phone: 'Mobile number', otp: 'OTP' };
+        const fieldNames = { username: 'Email', password: 'Password', phone: 'Mobile number' };
         if (item.type === 'missing' && fieldNames[field]) {
           return `${fieldNames[field]} is required`;
         }
@@ -49,17 +57,6 @@ function getErrorMessage(payload) {
 }
 
 export async function apiRequest(endpoint, options = {}) {
-  if (
-    typeof window !== 'undefined' &&
-    window.location.hostname !== 'localhost' &&
-    window.location.hostname !== '127.0.0.1' &&
-    API_BASE_URL.includes('localhost')
-  ) {
-    throw new Error(
-      'Backend is not connected yet. Please add VITE_API_BASE_URL in your Vercel Project Settings > Environment Variables.'
-    );
-  }
-
   const token = getAuthToken();
   const headers = new Headers(options.headers || {});
   const isFormData = options.body instanceof FormData;
