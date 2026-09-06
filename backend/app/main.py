@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import inspect, text
@@ -6,18 +8,37 @@ from app.config import settings
 from app.database.connection import Base, engine
 from app.routes import auth, crop, history, profile, soil, weather
 
-Base.metadata.create_all(bind=engine)
-if engine.url.get_backend_name() == "sqlite":
-    user_columns = {column["name"] for column in inspect(engine).get_columns("users")}
-    if "phone" not in user_columns:
-        with engine.begin() as connection:
-            connection.execute(text("ALTER TABLE users ADD COLUMN phone VARCHAR(20)"))
+logger = logging.getLogger("smart_soil.main")
+
+
+def init_db():
+    try:
+        Base.metadata.create_all(bind=engine)
+        inspector = inspect(engine)
+        if "users" in inspector.get_table_names():
+            user_columns = {column["name"] for column in inspector.get_columns("users")}
+            with engine.begin() as connection:
+                if "phone" not in user_columns:
+                    connection.execute(text("ALTER TABLE users ADD COLUMN phone VARCHAR(20)"))
+                if "is_admin" not in user_columns:
+                    connection.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT 0"))
+                if "is_active" not in user_columns:
+                    connection.execute(text("ALTER TABLE users ADD COLUMN is_active BOOLEAN DEFAULT 1"))
+    except Exception as exc:
+        logger.warning("Database initialization notice: %s", exc)
+
+
+init_db()
 
 app = FastAPI(title=settings.app_name, debug=settings.app_debug)
 
+cors_origins = [origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()]
+if not cors_origins or "*" in cors_origins:
+    cors_origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
