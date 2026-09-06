@@ -1,5 +1,18 @@
-const RAW_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
-const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '');
+// Normalize the API base URL: handle bare hostnames injected by Render's fromService
+// and strip any trailing slashes to prevent double-slash URLs.
+function buildApiBaseUrl(raw) {
+  if (!raw) return 'http://localhost:8000';
+  const trimmed = raw.replace(/\/+$/, '');
+  // If it already has a protocol prefix, use it as-is
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return trimmed;
+  }
+  // Bare hostname injected by Render's fromService property → prepend https://
+  return `https://${trimmed}`;
+}
+
+const API_BASE_URL = buildApiBaseUrl(import.meta.env.VITE_API_BASE_URL);
+
 
 export function getAuthToken() {
   return localStorage.getItem('smartsoil_token');

@@ -33,13 +33,12 @@ init_db()
 app = FastAPI(title=settings.app_name, debug=settings.app_debug)
 
 cors_origins = [origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()]
-if not cors_origins or "*" in cors_origins:
-    cors_origins = ["*"]
+is_wildcard = not cors_origins or cors_origins == ["*"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins,
-    allow_credentials=True,
+    allow_origins=["*"] if is_wildcard else cors_origins,
+    allow_credentials=False if is_wildcard else True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
