@@ -45,14 +45,17 @@ git push origin main
    - **Value**: `https://smart-soil-api.onrender.com` *(use your actual backend URL, without trailing slash)*
 5. Click **Save Changes** and trigger **Manual Deploy** -> **Clear build cache & deploy**.
 
-### Step 4 (Optional): Twilio OTP Setup
-If you want to enable real SMS mobile login:
-1. Open **`smart-soil-api`** -> **Environment**.
-2. Add:
-   - `TWILIO_ACCOUNT_SID`: Your Twilio Account SID
-   - `TWILIO_AUTH_TOKEN`: Your Twilio Auth Token
-   - `TWILIO_PHONE_NUMBER`: Your Twilio Phone Number (in E.164 format, e.g. `+15551234567`)
-3. Save changes. If omitted, the app runs in standard email/password authentication mode and logs OTPs for testing.
+---
+
+## Option 2: Deploy Frontend on Vercel + Backend on Render
+
+If you prefer using Vercel for your frontend:
+1. Go to [vercel.com](https://vercel.com) -> **Add New...** -> **Project**.
+2. Select your repository `Smart-Soil-Detection-and-Crop-Recommendation`.
+3. In **Environment Variables**, add:
+   - **Key**: `VITE_API_BASE_URL`
+   - **Value**: `https://smart-soil-api.onrender.com` (your deployed Render API URL)
+4. Click **Deploy**. The included `vercel.json` will automatically build the Vite React frontend with full client-side SPA routing support.
 
 ---
 
@@ -126,9 +129,6 @@ VITE_API_BASE_URL="https://api.yourdomain.com" npm run build
 | `CORS_ORIGINS` | No | `*` | Allowed origins (comma-separated or `*`) |
 | `APP_DEBUG` | No | `false` | Enable or disable debug mode |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | No | `60` | Token expiration time in minutes |
-| `TWILIO_ACCOUNT_SID` | Optional | `""` | Twilio account SID for mobile SMS |
-| `TWILIO_AUTH_TOKEN` | Optional | `""` | Twilio auth token |
-| `TWILIO_PHONE_NUMBER` | Optional | `""` | Twilio phone number |
 
 ### Frontend (`smart-soil-frontend`)
 | Variable | Required | Default | Description |
